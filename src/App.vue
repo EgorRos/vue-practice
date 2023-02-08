@@ -19,7 +19,7 @@
         />
         </my-dialog>
         <post-list 
-            :POSTS="sortedAndSearchedPosts"
+            :POSTS="postsShowed"
             @remove="removePost"
             v-if="!isPostLoading"
         />
@@ -61,6 +61,7 @@ export default {
     data() {
         return {
             posts: [], 
+            postsShowed: [],
             dialogVisible: false,
             isPostLoading: false,
             selectedSort: '',
@@ -97,8 +98,17 @@ export default {
             try {
                 this.isPostLoading = true
 
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10')
-                this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts'
+                    // , {
+                    //     params: {
+                    //     _limit : this.limit,
+                    //     _page : this.page
+                        
+                    //     }}
+                        )
+                console.log(response) 
+                this.totalPages = Math.ceil(response.data.length / this.limit)
+                console.log(this.totalPages) 
 
                 this.posts = response.data //помещение постов в posts
 
@@ -135,6 +145,9 @@ export default {
         },
         sortedAndSearchedPosts() {
             return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLocaleLowerCase()))
+        },
+        postsShowed() {
+            return this.sortedAndSearchedPosts.slice(this.page*this.limit-this.limit, this.page*this.limit)
         }
     },
 
