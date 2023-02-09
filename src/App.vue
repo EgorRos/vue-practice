@@ -12,6 +12,7 @@
             v-model="selectedSort"
             :options="sortOptions"
             />
+            <!-- @change-option="optionChanged" -->
         </div>
         <my-dialog v-model:show="dialogVisible">
             <post-form
@@ -94,6 +95,9 @@ export default {
         changePage(page) {
             this.page = page
         },
+        // optionChanged() {
+        //     this.page = 1;
+        // },
         async fetchPosts() { //Получение массива постов
             try {
                 this.isPostLoading = true
@@ -106,9 +110,9 @@ export default {
                         
                     //     }}
                         )
-                console.log(response) 
+                
                 this.totalPages = Math.ceil(response.data.length / this.limit)
-                console.log(this.totalPages) 
+                
 
                 this.posts = response.data //помещение постов в posts
 
@@ -155,7 +159,10 @@ export default {
     watch: {
         page() {
          this.fetchPosts()
-        }
+        },
+        selectedSort() {
+            this.page = 1;
+        },
 
     //     selectedSort(newValue) {
     //         this.posts.sort((post1, post2) => {
