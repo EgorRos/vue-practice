@@ -8,6 +8,11 @@
             <my-button
                 @click="showDialog">Создание постов
             </my-button>
+            <my-radio
+            v-model="selectedPagination"
+            :options="paginationOptions"
+            :def="paginationOptions[0].value"
+            />
             <my-select
             v-model="selectedSort"
             :options="sortOptions"
@@ -25,6 +30,13 @@
             v-if="!isPostLoading"
         />
         <div v-else>Идет загрузка...</div>
+
+        <!-- <div 
+            v-if="selectedPagination=='endlessList'"
+            ref="observer" 
+            class="observer"
+        ></div> -->
+
         <!-- <div class="page__wrapper">
             <div 
             v-for="_page in totalPages" 
@@ -38,14 +50,15 @@
         </div> -->
 
         <my-pages
+            
             :totalPages="totalPages"
             :page="page"
             @changePage="changePage"
         />
 
-        <cookies
+        <!-- <cookies
             @submitCookies="submitCookies"
-        />
+        /> -->
         
     </div>
 </template>
@@ -70,6 +83,11 @@ export default {
                 {value: 'title', name: 'По названию'},
                 {value: 'body', name: 'По содержанию'},
                 {value: 'id', name: 'По индексу'},
+            ],
+            selectedPagination: '',
+            paginationOptions: [
+                {value: 'pages', name: 'Постранично'},
+                {value: 'endlessList', name: 'Бесконечный список'},
             ],
             searchQuery: '',
             page: 1,
@@ -128,8 +146,22 @@ export default {
         }
     },
     mounted() {
-        this.fetchPosts();
+        this.fetchPosts()
+        const options = {
+
+        rootMargin: '0px',
+        threshold: 1.0
+        }
+            const callback = (entries, observer) => {
+                if (entries[0].isIntersecting) {
+                    this.limit += 10
+                }
+        }
+            const observer = new IntersectionObserver(callback, options)
+            observer.observe(this.$refs.observer)
     }, 
+
+
     computed: {
         sortedPosts() {
             return [...this.posts].sort((post1, post2) => {
@@ -152,14 +184,14 @@ export default {
         },
         postsShowed() {
             return this.sortedAndSearchedPosts.slice(this.page*this.limit-this.limit, this.page*this.limit)
-        }
+        },
     },
 
     
     watch: {
-        page() {
-         this.fetchPosts()
-        },
+        // page() {
+        //  this.fetchPosts()
+        // },
         selectedSort() {
             this.page = 1;
         },
@@ -208,6 +240,7 @@ export default {
 .current-page {
     border: 2px solid salmon;
 }
+
 
 
 </style>
