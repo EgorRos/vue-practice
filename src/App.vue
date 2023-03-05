@@ -9,10 +9,12 @@
                 @click="showDialog">Создание постов
             </my-button>
             <my-radio
+            :groupName="`Pagination`"
             v-model="selectedPagination"
             :options="paginationOptions"
-            :def="paginationOptions[0].value"
+            :defaultOption="paginationOptions[0].value"
             />
+
             <my-select
             v-model="selectedSort"
             :options="sortOptions"
@@ -31,11 +33,11 @@
         />
         <div v-else>Идет загрузка...</div>
 
-        <!-- <div 
+        <div 
             v-if="selectedPagination=='endlessList'"
             ref="observer" 
             class="observer"
-        ></div> -->
+        ></div>
 
         <!-- <div class="page__wrapper">
             <div 
@@ -50,7 +52,7 @@
         </div> -->
 
         <my-pages
-            
+            v-if="selectedPagination=='pages'"
             :totalPages="totalPages"
             :page="page"
             @changePage="changePage"
@@ -84,7 +86,7 @@ export default {
                 {value: 'body', name: 'По содержанию'},
                 {value: 'id', name: 'По индексу'},
             ],
-            selectedPagination: '',
+            selectedPagination: 'pages',
             paginationOptions: [
                 {value: 'pages', name: 'Постранично'},
                 {value: 'endlessList', name: 'Бесконечный список'},
@@ -113,9 +115,9 @@ export default {
         changePage(page) {
             this.page = page
         },
-        // optionChanged() {
-        //     this.page = 1;
-        // },
+        optionChanged() {
+            this.page = 1;
+        },
         async fetchPosts() { //Получение массива постов
             try {
                 this.isPostLoading = true

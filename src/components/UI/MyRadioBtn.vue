@@ -1,15 +1,17 @@
 <template>
     <div 
-        v-for="option of options"   
+    v-for="option of options"   
+        :key="options.value"
     >
         <input 
-        @input="changeOption"
-        :key="options.value" 
         type="radio"
-        
-        id="{{option.value}}"
-        :value="option.value">
-        <label for="{{ option.value }}">{{ option.name }}</label>
+        :name="groupName"
+        :id="option.value"
+        :value="option.value"
+        :checked="defaultOption === option.value"
+        @change="$emit('update:modelValue', option.value)"
+        >
+        <label :for="option.value">{{ option.name }}</label>
     </div>
 </template>
 <script>
@@ -25,18 +27,34 @@ export default {
             type: Array,
             default: () => []
         },
-        def: {
+        defaultOption: {
             type: String,
+        },
+        groupName: {
+            type: String
         }
     },
-    methods: {
-        changeOption(event) {
-            this.$emit('update:modelValue', event.target.value)
-        }
-    }
+
+    // methods: {
+    //     changeOption(event) {
+    //         this.$emit('update:modelValue', event.target.value)
+    //     }
+    // },
+    // mounted() {
+        
+    // },
+    // @input="changeOption"
+        
+    //     type="radio"
+    //     :name="groupName"
+    //     :id="option.value"
+    //     :value="option.value"
+
+    // :for="option.value">{{ option.name }}
 }
 </script>
+
+
 <style>
 
-    
 </style>
