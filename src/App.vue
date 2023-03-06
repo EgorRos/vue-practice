@@ -32,9 +32,8 @@
             v-if="!isPostLoading"
         />
         <div v-else>Идет загрузка...</div>
-
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
         <div 
-            v-if="selectedPagination=='endlessList'"
             ref="observer" 
             class="observer"
         ></div>
@@ -50,7 +49,7 @@
             @click="changePage(_page)"
             >{{ _page }}</div>
         </div> -->
-
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////// -->
         <my-pages
             v-if="selectedPagination=='pages'"
             :totalPages="totalPages"
@@ -116,7 +115,7 @@ export default {
             this.page = page
         },
         optionChanged() {
-            this.page = 1;
+            if (this.selectedPagination = 'pages') {this.page = 1;}
         },
         async fetchPosts() { //Получение массива постов
             try {
@@ -149,18 +148,32 @@ export default {
     },
     mounted() {
         this.fetchPosts()
-        const options = {
+        if (this.selectedPagination = 'pages') {
+            const options = {
 
-        rootMargin: '0px',
-        threshold: 1.0
-        }
-            const callback = (entries, observer) => {
-                if (entries[0].isIntersecting) {
-                    this.limit += 10
+                rootMargin: '0px',
+                threshold: 1.0
                 }
+                    const callback = (entries, observer) => {
+                        if (entries[0].isIntersecting & this.selectedPagination==='endlessList') {
+                            this.limit += 10
+                        }
+                }
+                    const observer = new IntersectionObserver(callback, options)
+                    observer.observe(this.$refs.observer)
         }
-            const observer = new IntersectionObserver(callback, options)
-            observer.observe(this.$refs.observer)
+        // const options = {
+
+        // rootMargin: '0px',
+        // threshold: 1.0
+        // }
+        //     const callback = (entries, observer) => {
+        //         if (entries[0].isIntersecting) {
+        //             this.limit += 10
+        //         }
+        // }
+        //     const observer = new IntersectionObserver(callback, options)
+        //     observer.observe(this.$refs.observer)
     }, 
 
 
