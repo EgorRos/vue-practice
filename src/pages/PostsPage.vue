@@ -1,7 +1,11 @@
 <template>
     <div>
         <h1>Страница с постами</h1>
-        <my-input v-model="searchQuery" placeholder="Поиск по названию..">
+        <my-input 
+        v-focus
+        v-model="searchQuery" 
+        placeholder="Поиск по названию.."
+        >
             
         </my-input>
         <div class="app__btns">
